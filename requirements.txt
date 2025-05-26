@@ -8,3 +8,5 @@ koreanize-matplotlib
 gspread
 google-auth
 polyline
+matplotlib
+
