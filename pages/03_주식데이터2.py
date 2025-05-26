@@ -10,7 +10,7 @@ import random
 
 # --- 한글 폰트 설정 ---
 # 시스템 환경에 따라 경로 조정 (Streamlit Cloud 또는 리눅스 서버 기준 예시)
-font_path = os.path.join("fonts", "NanumGothic.ttf")
+font_path = os.path.join("fonts", "Malgun Gothic")
 if os.path.exists(font_path):
     fontprop = fm.FontProperties(fname=font_path)
     plt.rcParams['font.family'] = fontprop.get_name()
