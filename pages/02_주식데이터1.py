@@ -51,10 +51,18 @@ for name, ticker in top10_companies.items():
 # 시각화
 if data:
     price_df = pd.DataFrame(data)
+    price_df = price_df.interpolate(method='time')  # 시간 기준 보간
+    price_df = price_df.fillna(method='bfill')  # 앞에서 채우기
+    price_df = price_df.fillna(method='ffill')  # 뒤에서 채우기
     fig = go.Figure()
     for company in price_df.columns:
-        fig.add_trace(go.Scatter(x=price_df.index, y=price_df[company],
-                                 mode='lines', name=company))
+        fig.add_trace(go.Scatter(
+            x=price_df.index,
+            y=price_df[company],
+            mode='lines',
+            name=company,
+            connectgaps=True  # 결측값 연결
+    ))
 
     fig.update_layout(
         title="📊 글로벌 시가총액 상위 10개 기업의 최근 1년간 주가 변화",
