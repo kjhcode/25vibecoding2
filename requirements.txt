@@ -1,6 +1,10 @@
+streamlit
 folium
-streamlit_folium
-
-#streamlit>=1.34.0
-#folium>=0.14.0
-#streamlit-folium>=0.11.2
+streamlit-folium
+yfinance
+plotly
+seaborn
+koreanize-matplotlib
+gspread
+google-auth
+polyline
