@@ -10,7 +10,7 @@ st.title("📈 글로벌 시가총액 TOP10 기업의 최근 1년 주가 트렌�
 top10_companies = {
     "Apple": "AAPL",
     "Microsoft": "MSFT",
-    "Saudi Aramco": "2222.SR",  # 사우디 거래소
+    "Saudi Aramco": "2222.SR",
     "Alphabet (Google)": "GOOGL",
     "Amazon": "AMZN",
     "Nvidia": "NVDA",
@@ -20,7 +20,8 @@ top10_companies = {
     "Tesla": "TSLA"
 }
 
-end_date = datetime.today()
+# 날짜 설정
+end_date = datetime.today() - timedelta(days=1)  # 미래 방지
 start_date = end_date - timedelta(days=365)
 
 st.info("📡 주가 데이터를 로딩 중입니다...")
@@ -30,15 +31,16 @@ error_list = []
 
 for name, ticker in top10_companies.items():
     try:
-        df = yf.download(ticker, start=start_date, end=end_date)
-        if df.empty:
-            error_list.append(f"{name} 데이터가 비어 있음")
+        ticker_obj = yf.Ticker(ticker)
+        hist = ticker_obj.history(start=start_date, end=end_date)
+        if hist.empty:
+            error_list.append(f"{name}: 데이터 없음")
             continue
-        # 컬럼 확인: 'Adj Close' 없으면 'Close' 사용
-        if "Adj Close" in df.columns:
-            series = df["Adj Close"]
-        elif "Close" in df.columns:
-            series = df["Close"]
+        # 'Adj Close' 우선 사용, 없으면 'Close'
+        if "Adj Close" in hist.columns:
+            series = hist["Adj Close"]
+        elif "Close" in hist.columns:
+            series = hist["Close"]
         else:
             error_list.append(f"{name}: 'Adj Close' 또는 'Close' 컬럼 없음")
             continue
@@ -63,7 +65,7 @@ if data:
     )
     st.plotly_chart(fig, use_container_width=True)
 else:
-    st.warning("❌ 유효한 데이터를 불러오지 못했습니다. 인터넷 연결 또는 API 문제일 수 있습니다.")
+    st.warning("❌ 유효한 데이터를 불러오지 못했습니다.")
 
 # 오류 메시지 표시
 if error_list:
