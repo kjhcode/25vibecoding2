@@ -10,7 +10,7 @@ import random
 
 # --- 한글 폰트 설정 ---
 # 시스템 환경에 따라 경로 조정 (Streamlit Cloud 또는 리눅스 서버 기준 예시)
-font_path = "/usr/share/fonts/truetype/nanum/NanumGothic.ttf"  # or 다른 시스템 경로
+font_path = "/usr/share/fonts/truetype/nanum/NanumGothic.ttf"
 if os.path.exists(font_path):
     fontprop = fm.FontProperties(fname=font_path)
     plt.rcParams['font.family'] = fontprop.get_name()
