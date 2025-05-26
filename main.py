@@ -7,7 +7,7 @@ st.title("🗺️ 나만의 위치 북마크 지도")
 st.write("아래에 장소 정보를 입력하고 지도에 표시해보세요!")
 
 # 장소 입력
-place = st.text_input("장소 이름", value="서울 시청")
+place = st.text_input("장소 이름", value="광주동신여자고등학교")
 lat = st.number_input("위도 (Latitude)", value=37.5665, format="%.6f")
 lon = st.number_input("경도 (Longitude)", value=126.9780, format="%.6f")
 
