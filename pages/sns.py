@@ -1,37 +1,48 @@
 import pandas as pd
 import plotly.express as px
+import streamlit as st
 
-# CSV 파일 불러오기
-df = pd.read_csv("한국언론진흥재단_10대미디어이용통계_SNS 서비스별 이용률_20221231.csv", encoding='cp949')
+# CSV 파일 경로
+file_path = "한국언론진흥재단_10대미디어이용통계_SNS 서비스별 이용률_20221231.csv",'cp=949'
 
-# 1. 요일별 SNS 사용 시간 평균
-df_day = df.groupby("요일")["사용시간(분)"].mean().reset_index()
-fig1 = px.bar(df_day, x="요일", y="사용시간(분)", title="요일별 SNS 평균 사용 시간", color="사용시간(분)")
-fig1.show()
+# 데이터 불러오기 (한글 인코딩 처리)
+df = pd.read_csv(file_path, encoding='cp949')
 
-# 2. SNS 종류별 감정 점수 boxplot
-fig2 = px.box(df, x="SNS종류", y="감정점수(1~10)", title="SNS 종류별 감정 점수 분포", color="SNS종류")
-fig2.show()
+# 컬럼 이름 정리
+df = df.rename(columns={"내 용": "SNS"})
 
-# 3. 히트맵: 요일 & SNS종류별 평균 감정 점수
-pivot_table = df.pivot_table(index="요일", columns="SNS종류", values="감정점수(1~10)", aggfunc="mean")
-fig3 = px.imshow(pivot_table, title="요일 & SNS 종류별 감정 점수 히트맵", text_auto=True)
-fig3.show()
+# Streamlit 앱 제목
+st.title("📱 10대 학생의 SNS 이용률 분석")
 
-# 4. 사용 시간에 따른 감정점수 산점도
-fig4 = px.scatter(df, x="사용시간(분)", y="감정점수(1~10)", color="SNS종류",
-                  title="SNS 사용시간과 감정 점수의 상관관계", trendline="ols")
-fig4.show()
-'''# 연도별 SNS 서비스 이용률 시각화
-if '연도' in df.columns and 'SNS 서비스' in df.columns:
-    st.subheader("연도별 SNS 서비스 이용률 비교")
-    fig = px.line(df, x='연도', y='이용률', color='SNS 서비스', markers=True)
-    st.plotly_chart(fig)
+# 원본 데이터 표시
+st.subheader("📋 원본 데이터")
+st.dataframe(df)
 
-# 특정 SNS 선택 후 이용률 추이 분석
-sns_options = df['SNS 서비스'].unique().tolist()
-selected_sns = st.selectbox("분석할 SNS 선택", sns_options)
-filtered = df[df['SNS 서비스'] == selected_sns]
+# 데이터 변환: 학령별로 melt하여 long-form으로 변환
+df_melted = df.melt(id_vars="SNS", var_name="학령", value_name="이용률")
 
-fig2 = px.bar(filtered, x='연도', y='이용률', title=f"{selected_sns} 이용률 변화", text='이용률')
-st.plotly_chart(fig2)'''
+# 전체 SNS 이용률 막대 그래프
+st.subheader("📊 SNS별 학령 구분 이용률 비교")
+fig = px.bar(
+    df_melted,
+    x="SNS",
+    y="이용률",
+    color="학령",
+    barmode="group",
+    title="SNS 서비스별 학령 구분 이용률 (%)",
+    text_auto=True,
+    height=500
+)
+st.plotly_chart(fig)
+
+# 선택된 SNS의 학령별 이용률 파이차트
+selected_sns = st.selectbox("🔍 특정 SNS를 선택해 학령별 이용률 보기", df["SNS"].unique())
+filtered = df_melted[df_melted["SNS"] == selected_sns]
+fig2 = px.pie(
+    filtered,
+    names="학령",
+    values="이용률",
+    title=f"{selected_sns} 이용률 구성비 (%)",
+    hole=0.4
+)
+st.plotly_chart(fig2)
