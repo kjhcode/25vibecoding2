@@ -2,7 +2,7 @@ import pandas as pd
 import plotly.express as px
 
 # CSV 파일 불러오기
-df = pd.read_csv("한국언론진흥재단_10대미디어이용통계_SNS 서비스별 이용률_20221231.csv", encoding='cp949')")
+df = pd.read_csv("한국언론진흥재단_10대미디어이용통계_SNS 서비스별 이용률_20221231.csv", encoding='cp949')
 
 # 1. 요일별 SNS 사용 시간 평균
 df_day = df.groupby("요일")["사용시간(분)"].mean().reset_index()
