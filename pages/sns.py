@@ -3,7 +3,7 @@ import plotly.express as px
 import streamlit as st
 
 # CSV 파일 경로
-file_path = "한국언론진흥재단_10대미디어이용통계_SNS 서비스별 이용률_20221231.csv",'cp=949'
+file_path =( "한국언론진흥재단_10대미디어이용통계_SNS 서비스별 이용률_20221231.csv",encoding='cp949')
 
 # 데이터 불러오기 (한글 인코딩 처리)
 df = pd.read_csv(file_path, encoding='cp949')
